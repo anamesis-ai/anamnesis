@@ -1,7 +1,8 @@
-import {defineConfig} from 'sanity'
-import {structureTool} from 'sanity/structure'
-import {visionTool} from '@sanity/vision'
-import {schemaTypes} from './schemas'
+import { defineConfig } from 'sanity';
+import { structureTool } from 'sanity/structure';
+import { visionTool } from '@sanity/vision';
+import { schemaTypes } from './schemas';
+import { structure } from './structure';
 
 export default defineConfig({
   name: 'default',
@@ -11,7 +12,9 @@ export default defineConfig({
   dataset: 'production',
 
   plugins: [
-    structureTool(),
+    structureTool({
+      structure,
+    }),
     visionTool(),
   ],
 
@@ -21,23 +24,23 @@ export default defineConfig({
 
   // Enable live preview
   document: {
-    productionUrl: async (prev, {document}) => {
-      const slug = document?.slug?.current
+    productionUrl: async (prev, { document }) => {
+      const slug = (document as any)?.slug?.current;
       if (!slug || !document._type) {
-        return prev
+        return prev;
       }
-      
-      const baseUrl = 'http://localhost:3000'
-      
+
+      const baseUrl = 'http://localhost:3000';
+
       if (document._type === 'post') {
-        return `${baseUrl}/posts/${slug}`
+        return `${baseUrl}/posts/${slug}`;
       }
-      
+
       if (document._type === 'directoryItem') {
-        return `${baseUrl}/directory/${slug}`
+        return `${baseUrl}/directory/${slug}`;
       }
-      
-      return prev
+
+      return prev;
     },
   },
-})
+});
