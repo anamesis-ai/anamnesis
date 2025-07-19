@@ -39,6 +39,10 @@ export const structure = (
                   S.documentTypeList('directoryItem')
                     .title('Directory Items')
                     .filter('_type == "directoryItem"')
+                    .canHandleIntent((intentName, params) => {
+                      // Handle create intent to show template options
+                      return intentName === 'create' && params.template;
+                    })
                 ),
             ])
         ),

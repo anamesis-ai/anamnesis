@@ -3,6 +3,7 @@ import { structureTool } from 'sanity/structure';
 import { visionTool } from '@sanity/vision';
 import { schemaTypes } from './schemas';
 import { structure } from './structure';
+import { templates } from './templates';
 
 export default defineConfig({
   name: 'default',
@@ -20,6 +21,7 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+    templates,
   },
 
   // Enable live preview
