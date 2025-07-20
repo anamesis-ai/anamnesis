@@ -154,6 +154,74 @@ The web app will be available at `http://localhost:3000`
    - Verify slugs are generated correctly
    - Slugs should be URL-friendly (no spaces, special characters)
 
+## Webhook Setup for Automatic Revalidation
+
+### Overview
+
+When you publish content in Sanity Studio, a webhook can automatically trigger the live site to update within 60 seconds. This ensures your published content appears immediately without manual intervention.
+
+### Setting Up the Webhook
+
+1. **Access Webhook Settings**
+   - Go to [Sanity Manage](https://manage.sanity.io/)
+   - Select your project
+   - Navigate to "API" → "Webhooks"
+
+2. **Create New Webhook**
+   - Click "Create webhook"
+   - **Name**: `Vercel Revalidation`
+   - **URL**: `https://your-domain.vercel.app/api/revalidate?secret=your-revalidate-secret`
+   - **Dataset**: `production`
+   - **Trigger on**: `Create`, `Update`, `Delete`
+   - **Filter**: `_type == "post" || _type == "directoryItem"`
+   - **HTTP method**: `POST`
+   - **HTTP headers**: None required
+   - **Include drafts**: No
+
+3. **Configure Environment Variables**
+
+   ```bash
+   # In apps/web/.env.local
+   SANITY_REVALIDATE_SECRET=your-secure-random-string
+   ```
+
+4. **Test the Webhook**
+   - Save the webhook configuration
+   - Publish a post or directory item in Studio
+   - Check webhook logs in Sanity Manage
+   - Verify content appears on live site within 60 seconds
+
+### Webhook Payload
+
+The webhook sends this payload to your endpoint:
+
+```json
+{
+  "_type": "post",
+  "_id": "document-id",
+  "slug": {
+    "current": "document-slug"
+  }
+}
+```
+
+### Troubleshooting Webhooks
+
+1. **Webhook Not Triggering**
+   - Check webhook URL is correct
+   - Verify secret matches environment variable
+   - Ensure filter expression is correct
+
+2. **Revalidation Not Working**
+   - Check Vercel function logs
+   - Verify environment variables are set in Vercel
+   - Test webhook URL manually with curl
+
+3. **Webhook Failing**
+   - Check webhook logs in Sanity Manage
+   - Verify endpoint returns 200 status
+   - Check for network connectivity issues
+
 ## Tips
 
 - **Save Frequently**: Use Ctrl/Cmd + S to save drafts
@@ -161,3 +229,4 @@ The web app will be available at `http://localhost:3000`
 - **Preview Before Publishing**: Use draft mode to review content before making it live
 - **Rich Text**: Use the block editor toolbar for formatting posts
 - **Images**: Upload images directly in the Studio for logos and author photos
+- **Webhook Testing**: Use the webhook test feature in Sanity Manage to verify setup

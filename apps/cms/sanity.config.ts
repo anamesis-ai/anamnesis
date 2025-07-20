@@ -12,6 +12,17 @@ export default defineConfig({
   projectId: 'your-project-id', // You'll need to replace this with actual project ID
   dataset: 'production',
 
+  // Webhook configuration for revalidation:
+  // To set up webhooks for automatic revalidation:
+  // 1. Go to https://manage.sanity.io/projects/[your-project-id]/api/webhooks
+  // 2. Create a new webhook with:
+  //    - Name: "Vercel Revalidation"
+  //    - URL: https://your-domain.vercel.app/api/revalidate?secret=your-revalidate-secret
+  //    - Trigger on: Create, Update, Delete
+  //    - Filter: _type == "post" || _type == "directoryItem"
+  //    - HTTP method: POST
+  // 3. Save and test the webhook
+
   plugins: [
     structureTool({
       structure,
