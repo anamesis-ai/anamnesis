@@ -41,7 +41,7 @@ export default defineConfig({
   // Enable live preview
   document: {
     productionUrl: async (prev, { document }) => {
-      const slug = (document as any)?.slug?.current;
+      const slug = (document as { slug?: { current?: string } })?.slug?.current;
       if (!slug || !document._type) {
         return prev;
       }
@@ -68,7 +68,7 @@ export default defineConfig({
         enable: '/api/draft',
       },
       draftMode: async (prev, { document }) => {
-        const slug = (document as any)?.slug?.current;
+        const slug = (document as { slug?: { current?: string } })?.slug?.current;
         if (!slug || !document._type) {
           return prev;
         }

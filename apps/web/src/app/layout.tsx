@@ -5,6 +5,7 @@ import { DocsLayout } from "@/components/layout/docs-layout";
 import { WebsiteStructuredData, OrganizationStructuredData } from "@/components/seo/structured-data";
 import { DraftModeBanner } from "@/components/preview/draft-mode-banner";
 import { draftMode } from "next/headers";
+import type { ReactNode } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -78,7 +79,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   const { isEnabled: isDraftMode } = await draftMode()
 

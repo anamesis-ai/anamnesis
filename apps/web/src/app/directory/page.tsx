@@ -1,67 +1,74 @@
-import { draftMode } from 'next/headers'
-import { sanityFetch } from '@/lib/sanity'
-import { SanityLive } from '@/lib/sanity'
+import { getAllDirectoryItems } from '@/lib/sanity.client'
+import { DirectoryClient } from './directory-client'
 
-const DIRECTORY_QUERY = `*[_type == "directoryItem"] | order(title asc) {
-  _id,
-  title,
-  slug,
-  summary,
-  category,
-  websiteUrl,
-  logo
-}`
+// Generate metadata for SEO
+export const metadata = {
+  title: 'Directory',
+  description: 'Discover curated resources, tools, and services across technology, business, education, health, entertainment, news, finance, travel, and more categories. Each listing has been carefully selected for quality and relevance.',
+  keywords: [
+    'directory',
+    'resources',
+    'tools',
+    'services',
+    'technology',
+    'business',
+    'education',
+    'health',
+    'entertainment',
+    'news',
+    'finance',
+    'travel',
+    'curated',
+    'quality',
+  ],
+  openGraph: {
+    title: 'Directory - Directorium',
+    description: 'Discover curated resources, tools, and services across multiple categories.',
+    type: 'website',
+    images: ['/og-directory.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Directory - Directorium',
+    description: 'Discover curated resources, tools, and services across multiple categories.',
+    images: ['/og-directory.png'],
+  },
+  alternates: {
+    canonical: '/directory',
+  },
+}
+
+// Enable ISR with revalidation
+export const revalidate = 3600 // Revalidate every hour
+
+// Define category options
+const categories = [
+  { id: 'all', label: 'All', emoji: '🔍' },
+  { id: 'technology', label: 'Technology', emoji: '💻' },
+  { id: 'business', label: 'Business', emoji: '💼' },
+  { id: 'education', label: 'Education', emoji: '📚' },
+  { id: 'health', label: 'Health', emoji: '🏥' },
+  { id: 'entertainment', label: 'Entertainment', emoji: '🎬' },
+  { id: 'news', label: 'News', emoji: '📰' },
+  { id: 'finance', label: 'Finance', emoji: '💰' },
+  { id: 'travel', label: 'Travel', emoji: '✈️' },
+  { id: 'other', label: 'Other', emoji: '📁' },
+]
 
 export default async function DirectoryPage() {
-  const { isEnabled: isDraftMode } = draftMode()
-  
-  const items = await sanityFetch({
-    query: DIRECTORY_QUERY,
-    perspective: isDraftMode ? 'previewDrafts' : 'published',
-  })
+  const items = await getAllDirectoryItems()
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {isDraftMode && (
-        <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-          <strong>Draft Mode Active</strong> - You are viewing draft content.{' '}
-          <a href="/api/disable-draft" className="underline">
-            Exit draft mode
-          </a>
-        </div>
-      )}
+    <div className="prose max-w-none">
+      <h1>Directory</h1>
       
-      <h1 className="text-3xl font-bold mb-8">Directory</h1>
-      
-      {items.length === 0 ? (
-        <p className="text-gray-600">No directory items found. Create some items in the CMS!</p>
-      ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item: any) => (
-            <div key={item._id} className="border rounded-lg p-6 shadow-sm">
-              <h2 className="text-xl font-semibold mb-2">{item.title}</h2>
-              <p className="text-gray-600 mb-3">{item.summary}</p>
-              {item.category && (
-                <span className="inline-block bg-gray-100 text-gray-800 text-sm px-2 py-1 rounded mb-3">
-                  {item.category}
-                </span>
-              )}
-              {item.websiteUrl && (
-                <a
-                  href={item.websiteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 underline"
-                >
-                  Visit Website
-                </a>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-      
-      <SanityLive />
+      <p>
+        Discover curated resources, tools, and services across various categories. 
+        Each listing has been carefully selected for quality and relevance.
+      </p>
+
+      <DirectoryClient items={items} categories={categories} />
     </div>
   )
 }
+

@@ -1,0 +1,166 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'apps/web/**'
+      - 'apps/cms/**'
+      - '.github/workflows/e2e-tests.yml'
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/web/**'
+      - 'apps/cms/**'
+      - '.github/workflows/e2e-tests.yml'
+
+jobs:
+  e2e-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 8
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Install Playwright Browsers
+      run: |
+        cd apps/web
+        pnpm dlx playwright install --with-deps
+
+    - name: Build applications
+      run: |
+        pnpm build
+      env:
+        # Build environment variables
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+        NEXT_PUBLIC_SANITY_DATASET: production
+        SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+        NEXT_PUBLIC_SANITY_API_READ_TOKEN: ${{ secrets.NEXT_PUBLIC_SANITY_API_READ_TOKEN }}
+        SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
+        NEXT_PUBLIC_SITE_URL: https://anamnesis-cms.vercel.app
+
+    - name: Start Next.js application
+      run: |
+        cd apps/web
+        pnpm start &
+        sleep 10
+      env:
+        # Runtime environment variables
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+        NEXT_PUBLIC_SANITY_DATASET: production
+        SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+        NEXT_PUBLIC_SANITY_API_READ_TOKEN: ${{ secrets.NEXT_PUBLIC_SANITY_API_READ_TOKEN }}
+        SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
+        NEXT_PUBLIC_SITE_URL: https://anamnesis-cms.vercel.app
+
+    - name: Wait for application to be ready
+      run: |
+        timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
+
+    - name: Run Playwright tests
+      run: |
+        cd apps/web
+        pnpm test:e2e
+      env:
+        BASE_URL: http://localhost:3000
+
+    - name: Upload Playwright Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-report
+        path: apps/web/playwright-report/
+        retention-days: 30
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: apps/web/test-results/
+        retention-days: 30
+
+    - name: Comment PR with test results
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && failure()
+      with:
+        script: |
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: '❌ E2E tests failed! Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.'
+          })
+
+  lighthouse:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 8
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Build application
+      run: pnpm build
+      env:
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+        NEXT_PUBLIC_SANITY_DATASET: production
+        SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+        NEXT_PUBLIC_SANITY_API_READ_TOKEN: ${{ secrets.NEXT_PUBLIC_SANITY_API_READ_TOKEN }}
+        SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
+        NEXT_PUBLIC_SITE_URL: https://anamnesis-cms.vercel.app
+
+    - name: Start Next.js application
+      run: |
+        cd apps/web
+        pnpm start &
+        sleep 10
+      env:
+        NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+        NEXT_PUBLIC_SANITY_DATASET: production
+        SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+        NEXT_PUBLIC_SANITY_API_READ_TOKEN: ${{ secrets.NEXT_PUBLIC_SANITY_API_READ_TOKEN }}
+        SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
+        NEXT_PUBLIC_SITE_URL: https://anamnesis-cms.vercel.app
+
+    - name: Wait for application
+      run: |
+        timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
+
+    - name: Audit URLs using Lighthouse CI
+      uses: treosh/lighthouse-ci-action@v11
+      with:
+        configPath: './apps/web/lighthouserc.js'
+        uploadArtifacts: true
+        temporaryPublicStorage: true
+        runs: 3
