@@ -13,8 +13,13 @@ export async function GET(request: NextRequest) {
   }
 
   // Enable Draft Mode by setting the cookie
-  draftMode().enable()
+  const draft = await draftMode()
+  draft.enable()
 
   // Redirect to the path from the fetched post
-  redirect(slug || '/')
+  // Default to homepage if no slug provided
+  const redirectPath = slug || '/'
+  
+  console.log(`Draft mode enabled, redirecting to: ${redirectPath}`)
+  redirect(redirectPath)
 }

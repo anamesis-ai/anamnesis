@@ -61,5 +61,34 @@ export default defineConfig({
 
       return prev;
     },
+    
+    // Preview URL for draft content
+    previewUrl: {
+      previewMode: {
+        enable: '/api/draft',
+      },
+      draftMode: async (prev, { document }) => {
+        const slug = (document as any)?.slug?.current;
+        if (!slug || !document._type) {
+          return prev;
+        }
+
+        const baseUrl =
+          process.env.NODE_ENV === 'production'
+            ? 'https://anamnesis-cms.vercel.app'
+            : 'http://localhost:3000';
+
+        let previewPath = '/';
+        if (document._type === 'post') {
+          previewPath = `/blog/${slug}`;
+        } else if (document._type === 'directoryItem') {
+          previewPath = `/directory/${slug}`;
+        }
+
+        // Use environment variable for the secret
+        const secret = process.env.SANITY_STUDIO_REVALIDATE_SECRET || 'YOUR_REVALIDATE_SECRET';
+        return `${baseUrl}/api/draft?secret=${secret}&slug=${previewPath}`;
+      },
+    },
   },
 });

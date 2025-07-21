@@ -86,31 +86,61 @@ The web app will be available at `http://localhost:3000`
 
 ## Live Preview Features
 
-### Triggering Preview Mode
+### 🎯 Preview Button in Studio
 
-1. **From Sanity Studio**
-   - When editing a document, look for the preview/eye icon
-   - Click to open the preview in the web app
-   - This automatically enables draft mode
+**NEW**: Draft Mode preview is now fully configured!
 
-2. **Manual Draft Mode**
-   - Navigate to: `http://localhost:3000/api/draft?secret=your-revalidate-secret&slug=/posts/your-post-slug`
-   - Replace `your-post-slug` with the actual slug
+1. **Using the Preview Button**
+   - Open any blog post or directory item in Sanity Studio
+   - Look for the **"Preview"** button in the document toolbar (eye icon)
+   - Click the preview button to open the draft content in your web frontend
+   - Studio automatically enables draft mode and shows unpublished changes
 
-### Using Live Preview
+2. **What Happens When You Click Preview**
+   - Studio generates a secure preview URL with authentication
+   - Opens the web app in a new tab/window
+   - Sets the `__prerender_bypass` cookie for draft mode
+   - Shows a **yellow preview banner** at the top of the page
+   - Displays draft content immediately (even unpublished changes)
 
-1. **Draft Mode Indicator**
-   - When in draft mode, you'll see a yellow banner at the top
-   - Banner shows "Draft Mode Active" with an exit link
+### 🔄 Real-time Preview Workflow
 
-2. **Real-time Updates**
-   - Edit content in Sanity Studio
-   - Changes appear immediately in the web app preview
-   - No need to refresh the page
+1. **Edit in Studio**
+   - Make changes to your blog post or directory item
+   - Save as draft (don't need to publish)
 
-3. **Exiting Draft Mode**
-   - Click "Exit draft mode" in the yellow banner
-   - Or navigate to: `http://localhost:3000/api/disable-draft`
+2. **Preview Changes**
+   - Click the **Preview** button in Studio
+   - See your draft changes instantly in the web frontend
+   - Preview banner shows "Preview Mode Active"
+
+3. **Iterate & Refine**
+   - Go back to Studio, make more changes
+   - Refresh the preview page to see updates
+   - Or click Preview button again for a fresh preview
+
+4. **Publish When Ready**
+   - Once satisfied with your changes, click **Publish** in Studio
+   - Content goes live on the actual website
+   - Preview mode can be exited
+
+### 🛠️ Draft Mode Controls
+
+1. **Preview Banner**
+   - **Yellow banner** appears at top when in draft mode
+   - Shows "Preview Mode Active" with helpful context
+   - Includes **"Exit Preview"** button
+   - Can be minimized with the eye icon
+
+2. **Exiting Draft Mode**
+   - Click **"Exit Preview"** in the yellow banner
+   - Or navigate to: `/api/disable-draft`
+   - Or close the preview tab and open the normal site
+
+3. **Manual Draft Mode** (Advanced)
+   - Direct URL: `/api/draft?secret=YOUR_SECRET&slug=/blog/your-slug`
+   - Useful for testing or sharing previews
+   - Replace `YOUR_SECRET` with your environment variable value
 
 ## Content Structure
 
