@@ -17,11 +17,14 @@ export default defineConfig({
   // 1. Go to https://manage.sanity.io/projects/72edep87/api/webhooks
   // 2. Create a new webhook with:
   //    - Name: "Vercel Revalidation"
-  //    - URL: https://anamnesis-cms.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC
+  //    - URL: https://anamnesis-cms.vercel.app/api/revalidate?secret=YOUR_REVALIDATE_SECRET
   //    - Trigger on: Create, Update, Delete
   //    - Filter: _type == "post" || _type == "directoryItem"
   //    - HTTP method: POST
-  // 3. Save and test the webhook
+  // 3. Replace YOUR_REVALIDATE_SECRET with the value from SANITY_REVALIDATE_SECRET env var
+  // 4. Save and test the webhook
+  //
+  // ⚠️  SECURITY: Never commit secrets to code! Use environment variables only.
 
   plugins: [
     structureTool({

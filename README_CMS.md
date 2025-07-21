@@ -170,7 +170,7 @@ When you publish content in Sanity Studio, a webhook can automatically trigger t
 2. **Create New Webhook**
    - Click "Create webhook"
    - **Name**: `Vercel Revalidation`
-   - **URL**: `https://anamnesis-cms.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC`
+   - **URL**: `https://anamnesis-cms.vercel.app/api/revalidate?secret=YOUR_REVALIDATE_SECRET`
    - **Dataset**: `production`
    - **Trigger on**: `Create`, `Update`, `Delete`
    - **Filter**: `_type == "post" || _type == "directoryItem"`
@@ -178,11 +178,15 @@ When you publish content in Sanity Studio, a webhook can automatically trigger t
    - **HTTP headers**: None required
    - **Include drafts**: No
 
-3. **Environment Variables Configured**
-   Your environment variables are already set up with:
+   ⚠️ **IMPORTANT**: Replace `YOUR_REVALIDATE_SECRET` with the value from your `SANITY_REVALIDATE_SECRET` environment variable
+
+3. **Environment Variables Required**
+   Set these in your `apps/web/.env.local` file:
    - **Project ID**: `72edep87`
-   - **API Token**: Configured
-   - **Revalidation Secret**: `anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC`
+   - **API Token**: (See your Sanity dashboard)
+   - **Revalidation Secret**: (Generate a secure random string)
+
+   🔒 **SECURITY**: Never commit secrets to git! Keep them only in environment files.
 
 4. **Test the Webhook**
    - Save the webhook configuration
@@ -221,6 +225,48 @@ The webhook sends this payload to your endpoint:
    - Verify endpoint returns 200 status
    - Check for network connectivity issues
 
+## Security Best Practices
+
+### 🔒 **Secret Management**
+
+**CRITICAL**: Never commit secrets to git repositories!
+
+- ✅ **Store secrets in**: `.env.local` files (gitignored)
+- ✅ **Store secrets in**: Vercel environment variables
+- ❌ **NEVER store secrets in**: Committed code files
+- ❌ **NEVER store secrets in**: README files
+- ❌ **NEVER store secrets in**: Config files committed to git
+
+### **Environment Variables Required**
+
+```bash
+# apps/web/.env.local (this file is gitignored - safe for secrets)
+NEXT_PUBLIC_SANITY_PROJECT_ID=72edep87
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_READ_TOKEN=your-api-token-here
+NEXT_PUBLIC_SANITY_API_READ_TOKEN=your-api-token-here
+SANITY_REVALIDATE_SECRET=your-secure-random-string-here
+NEXT_PUBLIC_SITE_URL=https://anamnesis-cms.vercel.app
+```
+
+### **Secret Rotation**
+
+If a secret is accidentally exposed:
+
+1. **Immediately generate a new secret**
+2. **Update .env.local with the new secret**
+3. **Update Vercel environment variables**
+4. **Update webhook in Sanity Manage**
+5. **Remove exposed secrets from committed files**
+
+### **Vercel Deployment**
+
+Add environment variables in Vercel dashboard:
+
+- Go to Project Settings → Environment Variables
+- Add all secrets from `.env.local`
+- Never expose secrets in build logs
+
 ## Tips
 
 - **Save Frequently**: Use Ctrl/Cmd + S to save drafts
@@ -229,3 +275,4 @@ The webhook sends this payload to your endpoint:
 - **Rich Text**: Use the block editor toolbar for formatting posts
 - **Images**: Upload images directly in the Studio for logos and author photos
 - **Webhook Testing**: Use the webhook test feature in Sanity Manage to verify setup
+- **Security**: Always use environment variables for secrets, never commit them
