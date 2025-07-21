@@ -17,7 +17,7 @@ export default defineConfig({
   // 1. Go to https://manage.sanity.io/projects/72edep87/api/webhooks
   // 2. Create a new webhook with:
   //    - Name: "Vercel Revalidation"
-  //    - URL: https://your-domain.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC
+  //    - URL: https://anamnesis-cms.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC
   //    - Trigger on: Create, Update, Delete
   //    - Filter: _type == "post" || _type == "directoryItem"
   //    - HTTP method: POST
@@ -43,10 +43,13 @@ export default defineConfig({
         return prev;
       }
 
-      const baseUrl = 'http://localhost:3000';
+      const baseUrl =
+        process.env.NODE_ENV === 'production'
+          ? 'https://anamnesis-cms.vercel.app'
+          : 'http://localhost:3000';
 
       if (document._type === 'post') {
-        return `${baseUrl}/posts/${slug}`;
+        return `${baseUrl}/blog/${slug}`;
       }
 
       if (document._type === 'directoryItem') {

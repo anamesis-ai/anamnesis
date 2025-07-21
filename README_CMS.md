@@ -170,7 +170,7 @@ When you publish content in Sanity Studio, a webhook can automatically trigger t
 2. **Create New Webhook**
    - Click "Create webhook"
    - **Name**: `Vercel Revalidation`
-   - **URL**: `https://your-domain.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC`
+   - **URL**: `https://anamnesis-cms.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC`
    - **Dataset**: `production`
    - **Trigger on**: `Create`, `Update`, `Delete`
    - **Filter**: `_type == "post" || _type == "directoryItem"`
