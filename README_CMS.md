@@ -170,7 +170,7 @@ When you publish content in Sanity Studio, a webhook can automatically trigger t
 2. **Create New Webhook**
    - Click "Create webhook"
    - **Name**: `Vercel Revalidation`
-   - **URL**: `https://your-domain.vercel.app/api/revalidate?secret=your-revalidate-secret`
+   - **URL**: `https://your-domain.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC`
    - **Dataset**: `production`
    - **Trigger on**: `Create`, `Update`, `Delete`
    - **Filter**: `_type == "post" || _type == "directoryItem"`
@@ -178,12 +178,11 @@ When you publish content in Sanity Studio, a webhook can automatically trigger t
    - **HTTP headers**: None required
    - **Include drafts**: No
 
-3. **Configure Environment Variables**
-
-   ```bash
-   # In apps/web/.env.local
-   SANITY_REVALIDATE_SECRET=your-secure-random-string
-   ```
+3. **Environment Variables Configured**
+   Your environment variables are already set up with:
+   - **Project ID**: `72edep87`
+   - **API Token**: Configured
+   - **Revalidation Secret**: `anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC`
 
 4. **Test the Webhook**
    - Save the webhook configuration

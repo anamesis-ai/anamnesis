@@ -9,15 +9,15 @@ export default defineConfig({
   name: 'default',
   title: 'Directorium CMS',
 
-  projectId: 'your-project-id', // You'll need to replace this with actual project ID
+  projectId: '72edep87',
   dataset: 'production',
 
   // Webhook configuration for revalidation:
   // To set up webhooks for automatic revalidation:
-  // 1. Go to https://manage.sanity.io/projects/[your-project-id]/api/webhooks
+  // 1. Go to https://manage.sanity.io/projects/72edep87/api/webhooks
   // 2. Create a new webhook with:
   //    - Name: "Vercel Revalidation"
-  //    - URL: https://your-domain.vercel.app/api/revalidate?secret=your-revalidate-secret
+  //    - URL: https://your-domain.vercel.app/api/revalidate?secret=anm_2025_revalidate_7mK9pL3xQ8vN2wR5tE6yU1zA4bC
   //    - Trigger on: Create, Update, Delete
   //    - Filter: _type == "post" || _type == "directoryItem"
   //    - HTTP method: POST
