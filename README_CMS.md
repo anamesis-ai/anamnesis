@@ -84,6 +84,51 @@ The web app will be available at `http://localhost:3000`
    - **Website URL**: Link to the resource
    - **Logo**: Optional image upload
 
+### Creating Social Media Campaigns
+
+**NEW**: Schedule and manage social media content for your blog posts!
+
+1. **Navigate to Social Media Section**
+   - Click on "📱 Social Media" in the left sidebar
+   - Choose from:
+     - **All Social Posts**: Complete overview
+     - **Draft Campaigns**: Work-in-progress campaigns
+     - **Scheduled Posts**: Ready-to-publish content
+     - **Published Posts**: Historical campaigns
+
+2. **Create New Social Media Post**
+   - Click "Create" → "Social Media Post"
+   - **Internal Title**: Campaign reference name
+   - **Related Blog Post**: Select the blog post to promote
+   - **Campaign Status**: Draft, Scheduled, Published, or Cancelled
+
+3. **Set Scheduling**
+   - **Scheduled Publication Date**: When to post (must be future)
+   - System validates future dates automatically
+
+4. **Configure Platform Content**
+   - **Add Platforms**: Click "+" to add social platforms
+   - **Choose Platform**: Twitter/X, LinkedIn, Facebook, Instagram, Threads, Mastodon
+   - **Write Caption**: Platform-specific messaging (max 500 chars)
+   - **Add Hashtags**: Relevant tags (without # symbol)
+   - **Custom Image**: Override blog post image if needed
+   - **Include Link**: Toggle link back to blog post
+
+5. **Platform-Specific Options**
+   - **Twitter**: Enable thread mode for long content
+   - **LinkedIn**: Mark as article promotion
+   - **Instagram**: Also post to Stories
+
+6. **Campaign Tracking**
+   - **Enable Analytics**: Track performance metrics
+   - **UTM Campaign**: Custom tracking parameter
+   - **Campaign Goals**: Brand awareness, traffic, engagement, etc.
+
+7. **Save and Schedule**
+   - **Save as Draft**: Continue editing later
+   - **Set to Scheduled**: Ready for publication
+   - Use campaign notes for internal coordination
+
 ## Live Preview Features
 
 ### 🎯 Preview Button in Studio

@@ -47,13 +47,60 @@ export const structure = (
             ])
         ),
 
+      // Social Media Section
+      S.listItem()
+        .title('📱 Social Media')
+        .child(
+          S.list()
+            .title('Social Media Management')
+            .items([
+              S.listItem()
+                .title('All Social Posts')
+                .child(
+                  S.documentTypeList('socialMedia')
+                    .title('Social Media Posts')
+                    .defaultOrdering([
+                      { field: 'scheduledDate', direction: 'asc' },
+                      { field: '_createdAt', direction: 'desc' }
+                    ])
+                ),
+              
+              S.listItem()
+                .title('Draft Campaigns')
+                .child(
+                  S.documentTypeList('socialMedia')
+                    .title('Draft Social Media Campaigns')
+                    .filter('status == "draft"')
+                    .defaultOrdering([{ field: '_createdAt', direction: 'desc' }])
+                ),
+                
+              S.listItem()
+                .title('Scheduled Posts')
+                .child(
+                  S.documentTypeList('socialMedia')
+                    .title('Scheduled Social Media Posts')
+                    .filter('status == "scheduled"')
+                    .defaultOrdering([{ field: 'scheduledDate', direction: 'asc' }])
+                ),
+                
+              S.listItem()
+                .title('Published Posts')
+                .child(
+                  S.documentTypeList('socialMedia')
+                    .title('Published Social Media Posts')
+                    .filter('status == "published"')
+                    .defaultOrdering([{ field: 'scheduledDate', direction: 'desc' }])
+                ),
+            ])
+        ),
+
       // Divider
       S.divider(),
 
       // Additional items that might be created
       ...S.documentTypeListItems().filter(
         (listItem) =>
-          !['post', 'author', 'directoryItem', 'blockContent'].includes(
+          !['post', 'author', 'directoryItem', 'socialMedia', 'blockContent'].includes(
             listItem.getId() || ''
           )
       ),
